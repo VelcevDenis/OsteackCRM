@@ -1,2 +1,0 @@
-# OsteackCRM
-/Pyton/OsteckCRM
