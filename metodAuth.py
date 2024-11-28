@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
-from models import Users, PersonalDetails
+from columns import Users, PersonalDetails
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
@@ -16,6 +16,20 @@ ALGORITHM='HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
+
+class UserBase(BaseModel):
+    full_name: str
+    email: str
+    last_date_connection: datetime | None  # Use native Python date type
+    is_deleted: bool
+    description: str | None
+    updated_at: datetime
+    role_id: int
+    hashed_pass: str
+
+    class Config:
+        orm_mode = True
+
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
