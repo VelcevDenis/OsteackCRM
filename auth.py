@@ -10,6 +10,7 @@ from models import Users, PersonalDetails
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
+import authMethods
 
 SESSION_TIME = 20
 
@@ -61,7 +62,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         updated_at = create_user_request.updated_at,
         hashed_pass = bcrypt_context.hash(create_user_request.hashed_pass), 
         last_date_connection=None,
-        role_id=0
+        role_id=3
     )    
         
     db.add(create_user_model)
@@ -81,28 +82,16 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
 @router.post("/token", response_model=Token)
 async def login_for_access_token(from_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                   db: db_dependency):
-    user = authenticate_user(from_data.username, from_data.password, db)  # Use username here
+    user = authMethods.authenticate_user(from_data.username, from_data.password, db)  # Use username here
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate user.",
         )
-    token = create_access_token(user, timedelta(minutes=SESSION_TIME))
+    token = authMethods.create_access_token(user, timedelta(minutes=SESSION_TIME))
     return {"access_token": token, "token_type": "bearer"}
 
-def authenticate_user(username:str, password: str, db):
-    user = db.query(Users).filter(Users.email == username).first()
-    if not user:
-        return False
-    if not bcrypt_context.verify(password, user.hashed_pass):
-        return False
-    return user
 
-def create_access_token(user: Users, expires_delta: timedelta):
-    encode = {'email':user.email, 'id': user.id, 'role': user.role_id}
-    expires = datetime.utcnow() + expires_delta
-    encode.update({'exp':expires})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
     
 
     

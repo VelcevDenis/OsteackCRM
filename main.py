@@ -46,7 +46,7 @@ def startup():
                     email="sa@ost.ee",
                     last_date_connection=datetime(2024, 11, 16),
                     description="Leading tech firm",
-                    hashed_pass = "$2b$12$jy8t4p5E1Q/pEf68.yK74uEcz2ac/cQnAng4JYueHXZMek9k9lDQq",
+                    hashed_pass = "$2b$12$BoGz1C2s0vPQOcjlmHtciuWe1I/SMGdTE0aOG0J9VnNvrW18R7FZq",
                     role_id=super_admin_role.id
                 )
                 db.add(user)
