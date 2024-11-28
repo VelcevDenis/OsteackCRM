@@ -6,12 +6,8 @@ import models
 from datetime import datetime
 from database import engine, SessionLocal
 from sqlalchemy.orm import relationship, Session
-import auth
-import authMethods
-
 
 app = FastAPI()
-app.include_router(auth.router)
 
 models.Base.metadata.create_all(bind=engine)
  
@@ -21,9 +17,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-db_dependency = Annotated[Session, Depends(get_db)]
-user_dependency = Annotated[dict, Depends(authMethods.get_current_user)]
 
 @app.on_event("startup")
 def startup():
@@ -43,10 +36,10 @@ def startup():
             if not existing_user:
                 user = models.Users(
                     full_name="Den V",
-                    email="sa@ost.ee",
+                    email="denisv@ost.com",
                     last_date_connection=datetime(2024, 11, 16),
                     description="Leading tech firm",
-                    hashed_pass = "$2b$12$jy8t4p5E1Q/pEf68.yK74uEcz2ac/cQnAng4JYueHXZMek9k9lDQq",
+                    hashed_pass = "Test123!",
                     role_id=super_admin_role.id
                 )
                 db.add(user)
@@ -171,81 +164,3 @@ class ConnectCompanyBase(BaseModel):
     class Config:
         orm_mode = True 
 
-
-#REGION controller methods
-
-# @app.get("/roles/", status_code=status.HTTP_200_OK)
-# async def get_all_roles(db: Session = Depends(get_db)):
-#     roles = db.query(models.Roles).all()  
-
-# @app.post("/role/", status_code=status.HTTP_201_CREATED)
-# async def create_role(role: RoleBase, db: db_dependency):
-#     db_role = models.Roles(**role.dict())
-#     db.add(db_role)
-#     db.commit()
-#     db.refresh(db_role)
-#     return db_role
-
-# @app.get("/role/{role_id}", status_code=status.HTTP_200_OK)
-# async def read_user(role_id:int, db: db_dependency):  
-#     role = db.query(models.Roles).filter(models.Roles.id == role_id).first
-#     if role is None:
-#         raise HTTPException(status_code=404, detail='Role not found')
-#     return role
-
-
-
-
-
-
-
-@app.post("/user/", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserBase, db: db_dependency):    
-    db_user = models.Users(**user.dict())
-    db.add(db_user)
-    db.commit()
-    
-# @app.get("/user/{user_id}", status_code=status.HTTP_200_OK)
-# async def read_user(user_id:int, db: db_dependency):  
-#     user = db.query(models.Users).filter(models.Users.id == user_id).first
-#     if user is None:
-#         raise HTTPException(status_code=404, detail='User not found')
-#     return user
-
-@app.get("/user/{user_id}", status_code=status.HTTP_200_OK)
-async def read_user(user: user_dependency, user_id:int, db: db_dependency):  
-    user = db.query(models.Users).filter(models.Users.id == user_id).first
-    if user is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return user
-
-
-
-
-
-# @app.post("/compani/", status_code=status.HTTP_201_CREATED)
-# async def create_company(company: CompanyBase, db: db_dependency):    
-#     db_company = models.Companis(**company.dict())
-#     db.add(db_company)
-#     db.commit()
-
-# @app.get("/compani/{company_id}", status_code=status.HTTP_200_OK)
-# async def read_company(company_id:int, db: db_dependency):  
-#     company = db.query(models.Companis).filter(models.Companis.id == company_id).first
-#     if company is None:
-#         raise HTTPException(status_code=404, detail='Company not found')
-#     return company
-
-
-# @app.post("/connectCompany/", status_code=status.HTTP_201_CREATED)
-# async def create_connectCompany(connectCompany: ConnectCompanyBase, db: db_dependency):    
-#     db_connectCompany = models.ConnectCompanis(**connectCompany.dict())
-#     db.add(db_connectCompany)
-#     db.commit()
-
-# @app.get("/connectCompany/{connectCompany_id}", status_code=status.HTTP_200_OK)
-# async def read_connectCompany(connectCompany_id:int, db: db_dependency):  
-#     connectCompany = db.query(models.ConnectCompanis).filter(models.ConnectCompanis.id == connectCompany_id).first
-#     if connectCompany is None:
-#         raise HTTPException(status_code=404, detail='Company Contact not found')
-#     return connectCompany

@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS company (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create the 'connect_companys' table (relationship between users and companies)
-CREATE TABLE IF NOT EXISTS connect_companys (
+-- Create the 'connect_companis' table (relationship between users and companies)
+CREATE TABLE IF NOT EXISTS connect_companis (
     id INT AUTO_INCREMENT PRIMARY KEY,
     worker_id INT NOT NULL,  
     company_id INT NOT NULL,  

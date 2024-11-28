@@ -4,28 +4,27 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from database import Base
 
-class Role(Base):
+class Roles(Base):
     __tablename__ = 'roles'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     role_name = Column(String(50), unique=True, nullable=False)  
 
-class User(Base):
+class Users(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     full_name = Column(String(50), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    phone = Column(String(15), nullable=True)
+    email = Column(String(100), unique=True, nullable=False)    
     last_date_connection = Column(Date, nullable=True)
     is_deleted = Column(Boolean, default=False)
     description = Column(Text, nullable=True)
     updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
-    role_id = Column(Integer, ForeignKey('roles.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    role_id = Column(Integer, ForeignKey('roles.id', ondelete='CASCADE', onupdate='CASCADE'))
+    hashed_pass = Column(Text, nullable=False)
+    role = relationship("Roles", backref="users")
 
-    role = relationship("Role", backref="users")
-
-class PersonalDetail(Base):
+class PersonalDetails(Base):
     __tablename__ = 'personal_details'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -37,13 +36,12 @@ class PersonalDetail(Base):
     country = Column(String(100), nullable=True)
     phone_number = Column(String(15), nullable=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    user = relationship("User", backref="personal_details")
+    user = relationship("Users", backref="personal_details")
 
 
-class Company(Base):
-    __tablename__ = 'company'
+class Companis(Base):
+    __tablename__ = 'companis'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     firm_name = Column(String(50), nullable=False)
@@ -56,12 +54,12 @@ class StatusEnum(str, Enum):
     completed = 'completed'
     canceled = 'canceled'
 
-class ConnectCompany(Base):
-    __tablename__ = 'connect_companys'
+class ConnectCompanis(Base):
+    __tablename__ = 'connect_companis'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     worker_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    company_id = Column(Integer, ForeignKey('company.id', ondelete='CASCADE'), nullable=False)
+    company_id = Column(Integer, ForeignKey('companis.id', ondelete='CASCADE'), nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     next_meeting = Column(DateTime, nullable=True)
     is_approved = Column(Boolean, nullable=True)
@@ -69,5 +67,5 @@ class ConnectCompany(Base):
     description = Column(Text, nullable=False)
     last_update = Column(DateTime, nullable=True)
 
-    worker = relationship("User", backref="connect_companys")
-    company = relationship("Company", backref="connect_companys")
+    worker = relationship("Users", backref="connect_companis")
+    company = relationship("Companis", backref="connect_companis")
