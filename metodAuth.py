@@ -29,6 +29,7 @@ class UserBase(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):

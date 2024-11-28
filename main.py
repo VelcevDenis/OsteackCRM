@@ -1,16 +1,14 @@
-from fastapi import FastAPI, HTTPException, Depends, status
-from sqlalchemy import  Date, DateTime
-from pydantic import BaseModel
+from fastapi import FastAPI, Depends
 from typing import Annotated
 import columns
-from datetime import datetime
 from database import engine, SessionLocal
-from sqlalchemy.orm import relationship, Session
-import APIAuth, metodAuth, startUp
+from sqlalchemy.orm import Session
+import APIAuth, APIUser, metodAuth, startUp
 
 
 app = FastAPI()
 app.include_router(APIAuth.router)
+app.include_router(APIUser.router)
 
 columns.Base.metadata.create_all(bind=engine)
  

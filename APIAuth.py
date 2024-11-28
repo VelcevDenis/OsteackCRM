@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from sqlalchemy import  Date
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -7,9 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
 from columns import Users, PersonalDetails
-from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordRequestForm
 import metodAuth
 import columns
 
@@ -91,10 +88,3 @@ async def login_for_access_token(from_data: Annotated[OAuth2PasswordRequestForm,
         )
     token = metodAuth.create_access_token(user, timedelta(minutes=SESSION_TIME))
     return {"access_token": token, "token_type": "bearer"}
-
-@router.get("/user/{user_id}", status_code=status.HTTP_200_OK)
-async def read_user(user: user_dependency, user_id:int, db: db_dependency):  
-    user = db.query(columns.Users).filter(columns.Users.id == user_id).first
-    if user is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return user
