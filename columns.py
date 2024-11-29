@@ -53,6 +53,7 @@ class StatusEnum(str, Enum):
     pending = 'pending'
     completed = 'completed'
     canceled = 'canceled'
+    waiting = 'waiting'
 
 class ConnectCompanis(Base):
     __tablename__ = 'connect_companis'

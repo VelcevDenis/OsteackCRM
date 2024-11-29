@@ -1,6 +1,7 @@
 from sqlalchemy import  Date, DateTime
 from pydantic import BaseModel
 from datetime import datetime
+import columns
 
 class RoleBase(BaseModel):
     role_name: str
@@ -30,15 +31,17 @@ class CompanyBase(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 class ConnectCompanyBase(BaseModel):
     worker_id: int  
     company_id: int
     next_meeting: datetime
     is_approved: bool
-    status: bool | None
+    status: columns.StatusEnum = columns.StatusEnum.pending 
     description: str | None
     last_update: datetime
 
     class Config:
         orm_mode = True 
+        from_attributes = True
