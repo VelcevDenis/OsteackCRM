@@ -88,3 +88,8 @@ async def login_for_access_token(from_data: Annotated[OAuth2PasswordRequestForm,
         )
     token = metodAuth.create_access_token(user, timedelta(minutes=SESSION_TIME))
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/verify-token/{token}")
+async def auth_user_token_verification(token:str):
+    info = await metodAuth.get_current_user(token=token)
+    return {"info":info}

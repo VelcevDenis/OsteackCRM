@@ -5,9 +5,23 @@ from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 import APIAuth, APIUser, APIRole, APICompany, APIConnectCompany
 import metodAuth, startUp
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(APIAuth.router)
 app.include_router(APIUser.router)
 app.include_router(APIRole.router)
