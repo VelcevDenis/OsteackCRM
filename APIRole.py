@@ -22,11 +22,9 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.get("/roles/", status_code=status.HTTP_200_OK, response_model=List[column_models.RoleBase])
-async def get_all_roles(u: user_dependency, db: Session = Depends(get_db)):
-    roles = db.query(columns.Roles).all()     
-    if not roles:
-        raise HTTPException(status_code=404, detail="Roles are not found")
+@router.get("/roles/all", response_model=List[column_models.RoleBase])
+async def list_of_all_roles(u: user_dependency, db: db_dependency, skip:int=0, limit:int=100):
+    roles = db.query(columns.Roles).offset(skip).limit(limit).all()
     return roles
 
 @router.post("/role/", status_code=status.HTTP_201_CREATED)
@@ -37,7 +35,7 @@ async def create_role(u: user_dependency, role: column_models.RoleBase, db: db_d
     db.refresh(db_role)
     return db_role
 
-@router.get("/role/{role_id}", status_code=status.HTTP_200_OK, response_model=column_models.RoleBase)
+@router.get("/role/by-id/{role_id}", status_code=status.HTTP_200_OK, response_model=column_models.RoleBase)
 async def read_user(u: user_dependency, role_id:int, db: db_dependency):  
     role = db.query(columns.Roles).filter(columns.Roles.id == role_id).first()
     if role is None:

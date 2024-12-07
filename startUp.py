@@ -38,11 +38,11 @@ def startup():
 
         super_admin_role = db.query(columns.Roles).filter(columns.Roles.role_name == "SuperAdmin").first()
         if super_admin_role:
-            existing_user = db.query(columns.Users).filter(columns.Users.email == "denisv@ost.com").first()
+            existing_user = db.query(columns.Users).filter(columns.Users.email == "sa@ost.ee").first()
             if not existing_user:
                 user = columns.Users(
                     full_name="Den V",
-                    email="sa@ost.com",
+                    email="sa@ost.ee",
                     last_date_connection=datetime(2024, 11, 16),
                     description="Leading tech firm",
                     hashed_pass = metodAuth.bcrypt_context.hash("Test123!"),

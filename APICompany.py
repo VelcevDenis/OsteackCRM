@@ -6,6 +6,8 @@ from database import SessionLocal
 from typing import Optional
 import metodAuth, columns, column_models
 from typing import List
+# import logging
+# logger = logging.getLogger("uvicorn")
 
 router = APIRouter(
     prefix='/auth',
@@ -29,8 +31,11 @@ async def create_company(u: user_dependency, company: column_models.CompanyBase,
     db_company = columns.Companis(**company.dict())
     db.add(db_company)
     db.commit()
+    db.refresh(db_company)
+    return {"message": "Company created successfully", "company_id": db_company.id}
 
-@router.get("/company/{name}", status_code=status.HTTP_200_OK, response_model=List[column_models.CompanyBase])
+
+@router.get("/company/by-name/{name}", status_code=status.HTTP_200_OK, response_model=List[column_models.CompanyBase])
 async def read_company_by_name(u: user_dependency, db: db_dependency, name: Optional[str] = None) -> List[column_models.CompanyBase]:    
     if name=='-':
         companis = db.query(columns.Companis).all()
@@ -42,9 +47,15 @@ async def read_company_by_name(u: user_dependency, db: db_dependency, name: Opti
     return [column_models.CompanyBase.from_orm(company) for company in companis]
 
 
-@router.get("/company/{company_id}", status_code=status.HTTP_200_OK)
+@router.get("/company/by-id/{company_id}", status_code=status.HTTP_200_OK)
 async def read_company_by_id(u: user_dependency, company_id:int, db: db_dependency):  
     company = db.query(columns.Companis).filter(columns.Companis.id == company_id).first()
     if company is None:
         raise HTTPException(status_code=404, detail='Company not found')
     return company
+
+@router.get("/company/all", response_model=List[column_models.CompanyBase])
+async def list_of_all_companies(u: user_dependency, db: db_dependency, skip:int=0, limit:int=100):
+    companies = db.query(columns.Companis).offset(skip).limit(limit).all()
+    # logger.info(f"(/company/all) Found companies: {companies}")    
+    return companies
