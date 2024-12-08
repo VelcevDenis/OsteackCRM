@@ -16,8 +16,17 @@ router = APIRouter(
 
 user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
 
-class CreateConnectCompanyRequest(BaseModel):
-    company_id:int
+class CreateConnectCompanyRequest(BaseModel):  
+    company_id: int | None       
+    firm_name: str  
+    email: str
+    phone: str | None  
+    next_meeting: datetime | None
+    is_approved: bool
+    status: columns.StatusEnum = columns.StatusEnum.pending  
+    description:str | None    
+
+class EditConnectCompanyRequest(BaseModel): 
     next_meeting: datetime | None
     is_approved: bool
     status: columns.StatusEnum = columns.StatusEnum.pending  
@@ -32,12 +41,20 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-
 @router.post("/recallCompanis/add", status_code=status.HTTP_201_CREATED)
 async def create_connectCompany(u: user_dependency, db: db_dependency, connectCompany: CreateConnectCompanyRequest):    
+    create_company_model = columns.Companis(
+        firm_name= connectCompany.firm_name,  
+        email= connectCompany.email,
+        phone= connectCompany.phone,
+        created_at= datetime.utcnow() 
+    )            
+    db.add(create_company_model)
+    db.commit()
+    
     create_connect_company_model = columns.ConnectCompanis(
         worker_id = u.get('id'),
-        company_id = connectCompany.company_id,
+        company_id = create_company_model.id,
         created_at = datetime.utcnow(),
         next_meeting = connectCompany.next_meeting,
         is_approved = 0,
@@ -65,7 +82,43 @@ async def read_connect_company_by_name(u: user_dependency, db: db_dependency, wo
     return [column_models.CompanyBase.from_orm(company) for company in companis]
 
 
-@router.get("/potentialCompanies/all", response_model=List[column_models.ConnectCompanyBase])
-async def list_of_all_potential_companis(u: user_dependency, db: db_dependency, skip:int=0, limit:int=100):
-    potential_clients = db.query(columns.ConnectCompanis).offset(skip).limit(limit).all()
-    return potential_clients
+@router.get("/potentialCompanies/all", response_model=List[CreateConnectCompanyRequest])
+async def list_of_all_potential_companis(u: user_dependency, db: db_dependency, skip: int = 0, limit: int = 100):
+    potential_clients = db.query(columns.ConnectCompanis).join(
+        columns.Companis, columns.ConnectCompanis.company_id == columns.Companis.id
+    ).filter(columns.ConnectCompanis.worker_id == u.get('id')).offset(skip).limit(limit).all()
+    
+    result = [
+        CreateConnectCompanyRequest(
+            company_id = client.company.id,
+            firm_name=client.company.firm_name,
+            email=client.company.email,
+            phone=client.company.phone,
+            next_meeting=client.next_meeting,
+            is_approved=client.is_approved,
+            status=client.status,
+            description=client.description
+        )
+        for client in potential_clients
+    ]
+    
+    return result
+
+@router.put("/recallCompanis/edit/{connect_company_id}", status_code=status.HTTP_200_OK)
+async def edit_connect_company(u: user_dependency, db: db_dependency, connect_company_id: int, connectCompany: EditConnectCompanyRequest):   
+    connect_company_model = db.query(columns.ConnectCompanis).filter(columns.ConnectCompanis.id == connect_company_id).first()
+    if not connect_company_model:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Connect company with id {connect_company_id} not found"
+        )
+    
+    connect_company_model.next_meeting = connectCompany.next_meeting
+    connect_company_model.status = connectCompany.status
+    connect_company_model.description = connectCompany.description
+    connect_company_model.is_approved = 0 if connectCompany.status == columns.StatusEnum.pending else connect_company_model.is_approved  
+    connect_company_model.last_update = datetime.utcnow()  
+
+    db.commit()
+
+    return {"message": "Connect company updated successfully"}

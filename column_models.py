@@ -1,6 +1,7 @@
 from sqlalchemy import  Date, DateTime
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 import columns
 
 class RoleBase(BaseModel):
@@ -39,8 +40,8 @@ class ConnectCompanyBase(BaseModel):
     next_meeting: datetime
     is_approved: bool
     status: columns.StatusEnum = columns.StatusEnum.pending 
-    description: str | None
-    last_update: datetime
+    description: Optional[str] = None  # Make description optional
+    last_update: Optional[datetime] = None  # Make last_update optional
 
     class Config:
         orm_mode = True 
