@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
 from datetime import timedelta, datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import metodAuth, columns
 from typing import List
 
@@ -31,7 +31,7 @@ class SearchUserRequest(BaseModel):
 
 
 class EditUserRequest(BaseModel): 
-    first_name: str  
+    first_name: str = Field(required=None)  
     last_name: str 
     email: str
     phone: str | None

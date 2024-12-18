@@ -8,18 +8,18 @@ from database import SessionLocal
 from columns import Users, PersonalDetails
 from fastapi.security import OAuth2PasswordRequestForm
 import metodAuth
-import columns
+from config import settings
 
 
-SESSION_TIME = 20
+SESSION_TIME = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter(
     prefix='/auth',
     tags=['auth']
 )
-
-SECRET_KEY='1ca0b6d929bf74573d607d47244a4646b969806529c54e7ee1a02985d64e81f3a8890ccf45779f9cbf62c8fde16e27394c1f63f42911afe57d3b021bc81ece8d7374d86823ca1ee8000702c1a070084d6d2ea8ac6dccb47a4f1865db71e4723a6eb07c6d3534fd20dfffeb5d8a57a8ed2426a7519192f3acc26a90e517961598a700ab5ecc7fc2bbb0475e0315c3aa2e9f364f434d7b5b48b0e57899206a245caf2070981e534c85ca940df60bccb573b7750a9373f0ea5569a7868723392b55b200e752df98a7cb46e3ed160d7d97cac16fa667e97c7800f1524d52ac71e49972ee81f654d7f85b9b9a579f9466d25375641bdb4fe155c880d16f5bc812c421'
-ALGORITHM='HS256'
+ 
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 
 user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
 
