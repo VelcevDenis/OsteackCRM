@@ -53,7 +53,6 @@ class StatusEnum(str, Enum):
     pending = 'pending'
     completed = 'completed'
     canceled = 'canceled'
-    waiting = 'waiting'
 
 class ConnectCompanis(Base):
     __tablename__ = 'connect_companis'
@@ -65,7 +64,7 @@ class ConnectCompanis(Base):
     next_meeting = Column(DateTime, nullable=True)
     is_approved = Column(Boolean, nullable=True)
     status = Column(SQLAlchemyEnum(StatusEnum), default=StatusEnum.pending)
-    description = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
     last_update = Column(DateTime, nullable=True)
 
     worker = relationship("Users", backref="connect_companis")

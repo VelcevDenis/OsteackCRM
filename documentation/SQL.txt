@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS personal_details (
 -- Be sure that the role_id (1) corresponds to the 'SuperAdmin' role inserted above
 INSERT INTO users (full_name, email, phone, last_date_connection, description, role_id)
 VALUES
-    ('Den V', 'denisv@ost.com', '+123456789', '2024-11-16', 'Leading tech firm', 1);
+    ('Den V', 'denisv@osaco.com', '+123456789', '2024-11-16', 'Leading tech firm', 1);
 
 -- Create the 'company' table
 CREATE TABLE IF NOT EXISTS company (

@@ -7,7 +7,7 @@ from starlette import status
 from database import SessionLocal
 from columns import Users, PersonalDetails
 from fastapi.security import OAuth2PasswordRequestForm
-import metodAuth
+import metodAuth, columns
 from config import settings
 
 
@@ -52,6 +52,11 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post("/employee/add", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+
+    email = db.query(columns.Users).filter(columns.Users.email == create_user_request.email).first()
+    if email is not None:
+        raise HTTPException(status_code=400, detail='Email already exists')
+    
     create_user_model = Users(
         full_name = f"{create_user_request.first_name} {create_user_request.last_name}",
         email = create_user_request.email,

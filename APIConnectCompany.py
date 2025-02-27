@@ -114,7 +114,7 @@ async def list_of_all_potential_companis(u: user_dependency, db: db_dependency, 
 
 @router.put("/recallCompanis/edit/{connect_company_id}", status_code=status.HTTP_200_OK)
 async def edit_connect_company(u: user_dependency, db: db_dependency, connect_company_id: int, connectCompany: EditConnectCompanyRequest):   
-    connect_company_model = db.query(columns.ConnectCompanis).filter(columns.ConnectCompanis.id == connect_company_id).first()
+    connect_company_model = db.query(columns.ConnectCompanis).filter(columns.ConnectCompanis.company_id == connect_company_id).first()
     if not connect_company_model:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
