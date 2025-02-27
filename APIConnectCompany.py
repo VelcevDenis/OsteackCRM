@@ -88,7 +88,12 @@ async def read_connect_company_by_name(u: user_dependency, db: db_dependency, wo
 async def list_of_all_potential_companis(u: user_dependency, db: db_dependency, skip: int = 0, limit: int = 5):
     potential_clients = db.query(columns.ConnectCompanis).join(
         columns.Companis, columns.ConnectCompanis.company_id == columns.Companis.id
-    ).filter(columns.ConnectCompanis.worker_id == u.get('id')).offset(skip).limit(limit).all()
+    ).offset(skip).limit(limit).all()
+    
+    # ///// filter by worker_id
+    # potential_clients = db.query(columns.ConnectCompanis).join(
+    #     columns.Companis, columns.ConnectCompanis.company_id == columns.Companis.id
+    # ).filter(columns.ConnectCompanis.worker_id == u.get('id')).offset(skip).limit(limit).all()
     
     result = [
         CreateConnectCompanyRequest(
