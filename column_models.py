@@ -46,3 +46,95 @@ class ConnectCompanyBase(BaseModel):
     class Config:
         orm_mode = True 
         from_attributes = True
+
+class CategoryBase(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True  # Use this instead of orm_mode
+
+class CategoryBaseCreateUpdate(BaseModel):
+    name: str
+
+    class Config:
+        from_attributes = True  # Use this instead of orm_mode
+
+class SubCategoryBase(BaseModel):
+    id: int
+    name: str
+    count:int
+    category_id: int
+
+    class Config:
+        from_attributes = True
+
+class SubCategoryCreateBase(BaseModel):
+    name: str
+    count:int
+    category_id: int
+
+    class Config:
+        from_attributes = True
+
+class SubCategoryBaseUpdate(BaseModel):
+    name: str
+    count:int 
+    booked:Optional[int] = None
+    class Config:
+        from_attributes = True
+
+class SubCategoryBaseUpdate(BaseModel):
+    id: int
+    booked:Optional[int] = None
+    class Config:
+        from_attributes = True
+
+class ProductBase(BaseModel):
+    id: int
+    customer_name: str
+    count: int
+    length: int
+    width: int
+    height: int
+    created_at: datetime = datetime.utcnow()
+    last_update: Optional[datetime] = None
+    status: columns.StatusEnum = columns.StatusEnum.pending
+    category_id: int
+    sub_category_id: int
+    category_obj: Optional[CategoryBase] = None
+    sub_category_obj: Optional[SubCategoryBase] = None
+
+    class Config:
+        from_attributes = True
+
+class ProductCreateBase(BaseModel):
+    customer_name: str
+    count: int
+    length: int
+    width: int
+    height: int
+    category_id: int
+    sub_category_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# class HistoryProductBase(BaseModel):
+#     id: int
+#     name: str
+#     procent: int
+#     price: int
+#     final_price: int
+#     product_count: int
+#     status: columns.StatusEnum = columns.StatusEnum.pending
+
+#     class Config:
+#         from_attributes = True
+
+# class EditHistoryProductBase(BaseModel):    
+#     status: columns.StatusEnum = columns.StatusEnum.pending
+
+#     class Config:
+#         from_attributes = True
