@@ -15,6 +15,10 @@ def update_subcategory(db: Session, sub_category: column_models.SubCategoryBaseU
     existing_sub_category.booked = (
         existing_sub_category.booked if sub_category.booked == -1 else sub_category.booked
     )
+    existing_sub_category.height = sub_category.height
+    existing_sub_category.width = sub_category.width
+    existing_sub_category.length = sub_category.length
+    existing_sub_category.price_per_piece = sub_category.price_per_piece
     db.commit()
     db.refresh(existing_sub_category)
 

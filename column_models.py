@@ -72,6 +72,11 @@ class SubCategoryBase(BaseModel):
 class SubCategoryCreateBase(BaseModel):
     name: str
     count:int
+    length: int
+    width: int
+    height: int
+    price_per_piece:float
+    booked:Optional[int] = None
     category_id: int
 
     class Config:
@@ -80,15 +85,19 @@ class SubCategoryCreateBase(BaseModel):
 class SubCategoryBaseUpdate(BaseModel):
     name: str
     count:int 
+    length: int
+    width: int
+    height: int
+    price_per_piece:float
     booked:Optional[int] = None
     class Config:
         from_attributes = True
 
-class SubCategoryBaseUpdate(BaseModel):
-    id: int
-    booked:Optional[int] = None
-    class Config:
-        from_attributes = True
+# class SubCategoryBaseUpdate(BaseModel):
+#     id: int
+#     booked:Optional[int] = None
+#     class Config:
+#         from_attributes = True
 
 class ProductBase(BaseModel):
     id: int
@@ -97,6 +106,8 @@ class ProductBase(BaseModel):
     length: int
     width: int
     height: int
+    total_price: Optional[float] = None
+    description: Optional[str] = None
     created_at: datetime = datetime.utcnow()
     last_update: Optional[datetime] = None
     status: columns.StatusEnum = columns.StatusEnum.pending
@@ -114,6 +125,8 @@ class ProductCreateBase(BaseModel):
     length: int
     width: int
     height: int
+    total_price: Optional[float] = None
+    description: Optional[str] = None
     category_id: int
     sub_category_id: int
 

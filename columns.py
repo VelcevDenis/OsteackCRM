@@ -84,6 +84,10 @@ class SubCategory(Base):
     name = Column(String(255), nullable=False)
     count = Column(Integer, nullable=False, default=0)
     booked = Column(Integer, nullable=False, default=0)
+    length = Column(Integer, nullable=False)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False) 
+    price_per_piece = Column(Float, nullable=False, default=0)
     category_id = Column(Integer, ForeignKey("categories.id"))  # Add this foreign key
 
     category = relationship("Category", backref="sub_categories")  # Fix backref name
@@ -99,6 +103,8 @@ class Product(Base):
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     last_update = Column(DateTime, nullable=True)  
     status = Column(SQLAlchemyEnum(StatusEnum), default=StatusEnum.pending)
+    total_price = Column(Float, nullable=False, default=0)
+    description = Column(Text, nullable=True)
 
     category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"))
     sub_category_id = Column(Integer, ForeignKey("sub_categories.id", ondelete="CASCADE"))

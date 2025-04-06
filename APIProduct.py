@@ -70,6 +70,8 @@ async def list_of_all_products(u: user_dependency, db: db_dependency, skip: int 
             created_at=p.created_at,
             last_update=p.last_update,
             status=p.status,
+            total_price=p.total_price,
+            description=p.description,
             category_id=p.category_id,
             sub_category_id=p.sub_category_id,
             category_obj=column_models.CategoryBase(id=p.category.id, name=p.category.name) if p.category else None,
@@ -92,6 +94,10 @@ async def edit_connect_company(u: user_dependency, db: db_dependency, product_id
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Product with id {product_id} not found"
         )  
+    
+    
+    if product.status == columns.StatusEnum.canceled:
+        product.count = 0
 
     existing_sub_category = db.query(columns.SubCategory).filter(columns.SubCategory.id == product_model.sub_category_id).first()
     existing_sub_category.booked -= product_model.count-product.count     
@@ -103,6 +109,8 @@ async def edit_connect_company(u: user_dependency, db: db_dependency, product_id
     product_model.count = product.count
     product_model.last_update = datetime.utcnow()
     product_model.status = product.status
+    product_model.total_price=product.total_price
+    product_model.description=product.description
     product_model.category_id = product.category_id
     product_model.sub_category_id = product.sub_category_id
 

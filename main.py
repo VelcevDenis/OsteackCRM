@@ -3,7 +3,7 @@ from typing import Annotated
 import columns
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
-import APIAuth, APIUser, APIRole, APICompany, APIConnectCompany, APIProduct, APICategory, APIHistoryProduct
+import APIAuth, APIUser, APIRole, APICompany, APIConnectCompany, APIProduct, APICategory
 import metodAuth
 from fastapi.middleware.cors import CORSMiddleware
 
