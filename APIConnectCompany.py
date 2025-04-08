@@ -6,7 +6,8 @@ from pydantic import BaseModel
 from starlette import status
 from database import SessionLocal
 from typing import Optional
-import metodAuth, columns, column_models
+import columns, column_models
+from auth import metod as mAuth
 from typing import List
 
 router = APIRouter(
@@ -14,7 +15,7 @@ router = APIRouter(
     tags=['recallCompany']
 )
 
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 class CreateConnectCompanyRequest(BaseModel):  
     company_id: int | None = None

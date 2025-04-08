@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
 from typing import Optional
-import metodAuth, columns, column_models
+import columns, column_models
+from auth import metod as mAuth
 from typing import List
 from datetime import datetime
 from sqlalchemy.orm import joinedload
@@ -15,7 +16,7 @@ router = APIRouter(
     tags=['product']
 )
 
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 def get_db():
     db = SessionLocal()

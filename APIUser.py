@@ -5,7 +5,8 @@ from starlette import status
 from database import SessionLocal
 from datetime import timedelta, datetime
 from pydantic import BaseModel, Field
-import metodAuth, columns
+import columns
+from auth import metod as mAuth
 from typing import List
 
 router = APIRouter(
@@ -13,7 +14,7 @@ router = APIRouter(
     tags=['user']
 )
 
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 class SearchUserRequest(BaseModel):
     userId: int | None = None

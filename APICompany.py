@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
 from typing import Optional
-import metodAuth, columns, column_models
+import columns, column_models
 from typing import List
+from auth import metod as mAuth
 # import logging
 # logger = logging.getLogger("uvicorn")
 
@@ -14,7 +15,7 @@ router = APIRouter(
     tags=['company']
 )
 
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 def get_db():
     db = SessionLocal()

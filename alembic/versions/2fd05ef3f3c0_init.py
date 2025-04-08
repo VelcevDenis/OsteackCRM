@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from database import SessionLocal  # Ensure this is correctly imported
 import columns
-import metodAuth  # Import password hashing
+from auth import metod as mAuth  # Import password hashing
 
 # Alembic revision identifiers
 revision = '2fd05ef3f3c0'  # Change this to the generated revision ID
@@ -121,7 +121,7 @@ def upgrade():
                     email="sa@osaco.ee",
                     last_date_connection=datetime(2024, 11, 16),
                     description="Leading tech firm",
-                    hashed_pass=metodAuth.bcrypt_context.hash("Test123!"),
+                    hashed_pass=mAuth.bcrypt_context.hash("Test123!"),
                     role_id=super_admin_role.id
                 )
                 session.add(user)

@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
-import metodAuth, columns, column_models
+import columns, column_models
+from auth import metod as mAuth
 import models.category_models as category_models
 
 router = APIRouter(
@@ -11,7 +12,7 @@ router = APIRouter(
     tags=['category']
 )
 
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 def get_db():
     db = SessionLocal()

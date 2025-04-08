@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends
 from typing import Annotated
+from auth import metod as mAuth, apiAuth
 import columns
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
-import APIAuth, APIUser, APIRole, APICompany, APIConnectCompany, APIProduct, APICategory
-import metodAuth
+import APIUser, APIRole, APICompany, APIConnectCompany, APIProduct, APICategory
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(APIAuth.router)
+app.include_router(apiAuth.router)
 app.include_router(APIUser.router)
 
 app.include_router(APIRole.router)
@@ -32,7 +32,6 @@ app.include_router(APIConnectCompany.router)
 app.include_router(APICategory.router)
 
 app.include_router(APIProduct.router)
-# app.include_router(APIHistoryProduct.router)
 
 columns.Base.metadata.create_all(bind=engine)
  
@@ -44,7 +43,7 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
-user_dependency = Annotated[dict, Depends(metodAuth.get_current_user)]
+user_dependency = Annotated[dict, Depends(mAuth.get_current_user)]
 
 #REGION controller methods
 
